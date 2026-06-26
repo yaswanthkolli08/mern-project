@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Community Polling & Survey App</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f4f4;
+padding:30px;
+}
+
+.container{
+max-width:700px;
+margin:auto;
+background:white;
+padding:25px;
+border-radius:12px;
+box-shadow:0 5px 15px rgba(0,0,0,.2);
+}
+
+h1{
+text-align:center;
+margin-bottom:20px;
+color:#333;
+}
+
+input,textarea,select{
+width:100%;
+padding:10px;
+margin:10px 0;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:16px;
+}
+
+button{
+padding:12px 20px;
+border:none;
+background:#007bff;
+color:white;
+border-radius:8px;
+cursor:pointer;
+font-size:16px;
+margin-top:10px;
+}
+
+button:hover{
+background:#0056b3;
+}
+
+.question{
+margin-top:20px;
+padding:15px;
+border:1px solid #ddd;
+border-radius:10px;
+}
+
+.option{
+display:block;
+margin:8px 0;
+}
+
+#result{
+margin-top:25px;
+background:#eef;
+padding:15px;
+border-radius:10px;
+display:none;
+}
+
+.progress{
+height:20px;
+background:#ddd;
+border-radius:20px;
+margin:8px 0;
+overflow:hidden;
+}
+
+.bar{
+height:100%;
+background:#28a745;
+width:0%;
+color:white;
+text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Community Poll</h1>
+
+<input type="text" id="title" placeholder="Survey Title">
+
+<textarea id="question" placeholder="Enter your question"></textarea>
+
+<input type="text" id="option1" placeholder="Option 1">
+<input type="text" id="option2" placeholder="Option 2">
+<input type="text" id="option3" placeholder="Option 3">
+<input type="text" id="option4" placeholder="Option 4">
+
+<button onclick="createPoll()">Create Poll</button>
+
+<div id="pollArea"></div>
+
+<div id="result"></div>
+
+</div>
+
+<script>
+
+let votes=[0,0,0,0];
+
+function createPoll(){
+
+let title=document.getElementById("title").value;
+let question=document.getElementById("question").value;
+
+let o1=document.getElementById("option1").value;
+let o2=document.getElementById("option2").value;
+let o3=document.getElementById("option3").value;
+let o4=document.getElementById("option4").value;
+
+document.getElementById("pollArea").innerHTML=`
+
+<div class="question">
+
+<h2>${title}</h2>
+
+<p>${question}</p>
+
+<label class="option"><input type="radio" name="vote" value="0"> ${o1}</label>
+
+<label class="option"><input type="radio" name="vote" value="1"> ${o2}</label>
+
+<label class="option"><input type="radio" name="vote" value="2"> ${o3}</label>
+
+<label class="option"><input type="radio" name="vote" value="3"> ${o4}</label>
+
+<button onclick="submitVote()">Submit Vote</button>
+
+</div>
+
+`;
+
+}
+
+function submitVote(){
+
+let selected=document.querySelector('input[name="vote"]:checked');
+
+if(!selected){
+alert("Select an option");
+return;
+}
+
+votes[selected.value]++;
+
+showResults();
+
+}
+
+function showResults(){
+
+let total=votes.reduce((a,b)=>a+b,0);
+
+let html="<h2>Live Results</h2>";
+
+for(let i=0;i<4;i++){
+
+let percent=total?Math.round((votes[i]/total)*100):0;
+
+html+=`
+Option ${i+1}
+<div class="progress">
+<div class="bar" style="width:${percent}%">${percent}%</div>
+</div>
+`;
+
+}
+
+document.getElementById("result").style.display="block";
+document.getElementById("result").innerHTML=html;
+
+}
+
+</script>
+
+</body>
+</html>
